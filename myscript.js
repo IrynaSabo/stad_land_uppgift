@@ -24,15 +24,35 @@ let dropdown = document.getElementById("country_dropdown");
        .catch(error=>console.log(error))
        .then(town=>{ 
               console.log(town);  
+          
               let stad;           
-          for(i=0; i<country.length;i++)  
-           { for(j=0; j<town.length; j++){
-             if(town[j].countryid===country[i].id){
-             stad = document.createElement("li");
-             stad.textContent = town[j].stadname;
-             dropdown.insertAdjacentHTML("afterend",stad);}}
-             stad.addEventListener("click",showInfo());}
+          for(i=0; i<country.length;i++) { 
+             // let ul_stader = document.createElement("ul");
 
+             var cityList = document.getElementById("cityList");
+             
+
+             for(j=0; j<town.length; j++){
+             
+              if(town[j].countryid===country[i].id){
+            //  stad = document.createElement("li");
+            //  stad.textContent = town[j].stadname;
+            //  dropdown.insertAdjacentHTML("afterend",stad);}}
+            //  stad.addEventListener("click",showInfo());
+
+            
+            cityList.insertAdjacentHTML("beforeend", "<button onClick='showCity("+town[j].id+")'>"+ town[j].stadname+"</button>" );
+            
+            }
+            
+          }
+         
+        }
+
+        function showCity(cityId) {
+          console.log(cityId);
+        };
+          
             function showInfo() {
              let  div_info = document.getElementById("info");
                 let text, besokt_btn;                    
