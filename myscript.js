@@ -29,7 +29,7 @@
              }
            })
            }
-           /*function showCityInfo(townId){// funktion som visar information om städerna när man klickar på respektiv knapp
+           function showCityInfo(townId){// funktion som visar information om städerna när man klickar på respektiv knapp
               console.log(townId);
                console.log(stadName);
                console.log(population);
@@ -48,8 +48,8 @@
             }
         function saveTownId(townId){
           var lander = JSON.stringify(town);
-        }
- */
+        }*/
+ 
 var landData ="";
 var countryId="";
 var countryName="";
@@ -82,7 +82,7 @@ fetch("stad.json").then(response=>response.json()).then(data=>{
       var townElement = document.createElement("button");
       townElement.className = "town_btn";
       townElement.textContent=town.stadname;
-      townElement.onclick = showCityInfo(town.id);
+      
       cityList.appendChild(townElement);
       townId=town.id;
       townName=town.stadname;
@@ -111,5 +111,5 @@ div_info.appendChild(besokt_btn);
 
 function saveTown(townId){
   
-  console.log(townId);
-}
+  console.log(townId);}
+
