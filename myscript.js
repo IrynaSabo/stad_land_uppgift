@@ -1,70 +1,115 @@
- 
-let dropdown = document.getElementById("country_dropdown");
- dropdown.length=0;
 
- let defaultOption = document.createElement("option");
- defaultOption.textContent = "Välj ett land";
- dropdown.add(defaultOption);
- dropdown.selectedIndex = 0;
+   /*fetch("land.json")// hämtar data från land jsonfil
+      .then(response=>response.json())
+      .catch(error=>console.log(error))
+      .then(country=>{//skapar knapar men ländernas namn
+          console.log(country);  
+          var lander = document.getElementById("countries");      
+          for(let i=0; i<country.length;i++){      
+          lander.insertAdjacentHTML("beforeend","<button id=`L_` onclick=`showTown("+country[i].id+")`>" + country[i].countryname+"</button>");
+          }       
+         }) 
+      
+     var stadName = ""
+     var population = ""
+     function showTown(landId){//funktion som visar städer av respektiv land när man klickar på knappen
+       fetch("stad.json")//hämtar data från stad jsonfil
+        .then(response=>response.json())
+        .catch(error=>console.log(error))
+        .then(town=>{ 
+          console.log(town);     
+           var cityList = document.getElementById("cityList");                    
+                for(let i=0; i < town.length; i++){//skapar städer som knapar 
+                 console.log(town[i].countryid, landId);
+                 if(town[i].countryid === landId){                                  
+             cityList.insertAdjacentHTML("beforeend","<button id=`C_` onclick=`showCityInfo("+town[i].id+")`>"+ town[i].stadname+"</button>");
+               stadName = town[i].stadname;
+               population = town[i].population;
+             }            
+             }
+           })
+           }
+           /*function showCityInfo(townId){// funktion som visar information om städerna när man klickar på respektiv knapp
+              console.log(townId);
+               console.log(stadName);
+               console.log(population);
+            var div_info = document.getElementById("info");                   
+             div_info.textContent = "<br/>" + stadName + " har " + population +"."  
+           showBesoktBtn(townId);
+           }
+        function showBesoktBtn(townId){//skapar besökt knappen
+          var div_info = document.getElementById("info"); 
+         var besokt_btn=document.createElement("button");
+         besokt_btn.setAttribute("id","besokt_btn");
+         besokt_btn.textContent="Besökt";
+         besokt_btn.onclick=saveTownId(townId);
+         div_info.insertAdjacentHTML("beforeend",besokt_btn);
 
-  fetch("land.json")
-   .then(response=>response.json())
-   .catch(error=>console.log(error))
-   .then(country=>{
-       console.log(country);
-       let option;
-       for(let i=0; i<country.length;i++){
-       option = document.createElement("option");
-       option.textContent = country[i].countryname;
-       option.value = country[i].id;       
-       dropdown.add(option);}
-       
-        fetch("stad.json")
-       .then(response=>response.json())
-       .catch(error=>console.log(error))
-       .then(town=>{ 
-              console.log(town);  
-          
-              let stad;           
-          for(i=0; i<country.length;i++) { 
-             // let ul_stader = document.createElement("ul");
-
-             var cityList = document.getElementById("cityList");
-             
-
-             for(j=0; j<town.length; j++){
-             
-              if(town[j].countryid===country[i].id){
-            //  stad = document.createElement("li");
-            //  stad.textContent = town[j].stadname;
-            //  dropdown.insertAdjacentHTML("afterend",stad);}}
-            //  stad.addEventListener("click",showInfo());
-
-            
-            cityList.insertAdjacentHTML("beforeend", "<button onClick='showCity("+town[j].id+")'>"+ town[j].stadname+"</button>" );
-            
-            }
-            
-          }
-         
+            }
+        function saveTownId(townId){
+          var lander = JSON.stringify(town);
         }
+ */
+var landData ="";
+var countryId="";
+var countryName="";
+fetch("land.json").then(response=>response.json()).then(data=>{
+  console.log(data);
+  landData=JSON.stringify(data);
+  var countries=document.getElementById("countries");
+  data.forEach(country => {
+    var countryElement = document.createElement("button");
+    countryElement.className = "country_btn";
+    countryElement.textContent=country.countryname; 
+    countryElement.addEventListener("click",showCity(country.id));  
+    countries.appendChild(countryElement); 
+    countryId=country.id;
+    countryName = country.countryname   
+  }); 
 
-        function showCity(cityId) {
-          console.log(cityId);
-        };
-          
-            function showInfo() {
-             let  div_info = document.getElementById("info");
-                let text, besokt_btn;                    
-                for(j=0; j<town.length; j++){                 
-                 besokt_btn = document.createElement("button");
-                besokt_btn.textContent = "Besökt" ;
-                div_info.insertAdjacentHTML("beforeend", besokt_btn);
-                stad.insertAdjacentHTML("afterend",div_info);    
-                 text+= "<br/>" + town[j].stadname + " har " + town[j].population + " invånare."
-                }
-                div_info.textContent=text;}
-            
-              })        
-       
-    })
+})
+var townData ="";
+var townId="";
+var townName = "";
+var townPopulation="";
+function showCity(countryId){
+console.log(countryId);
+fetch("stad.json").then(response=>response.json()).then(data=>{
+  console.log(data);
+  var cityList = document.getElementById("cityList");
+  data.forEach(town=>{
+    if(town.countryid===countryId){
+      var townElement = document.createElement("button");
+      townElement.className = "town_btn";
+      townElement.textContent=town.stadname;
+      townElement.onclick = showCityInfo(town.id);
+      cityList.appendChild(townElement);
+      townId=town.id;
+      townName=town.stadname;
+      townPopulation=town.population;
+      townData = town;
+    }
+  })
+})
+}
+function showCityInfo(cityId){
+  console.log(cityId);
+  console.log(townName);
+  console.log(townPopulation);
+  var div_info = document.getElementById("info");
+  div_info.textContent = " " + townName + " har " +townPopulation+" invånare ."
+  showBesoktBtn(townId);
+}
+function showBesoktBtn(){
+  var div_info = document.getElementById("info");
+var besokt_btn = document.createElement("button");
+besokt_btn.setAttribute("id","besokt_btn");
+besokt_btn.textContent = "Besökt";
+besokt_btn.addEventListener("click",saveTown(townId));
+div_info.appendChild(besokt_btn);
+}
+
+function saveTown(townId){
+  
+  console.log(townId);
+}
