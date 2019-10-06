@@ -1,74 +1,25 @@
 
-   /*fetch("land.json")// hämtar data från land jsonfil
-      .then(response=>response.json())
-      .catch(error=>console.log(error))
-      .then(country=>{//skapar knapar men ländernas namn
-          console.log(country);  
-          var lander = document.getElementById("countries");      
-          for(let i=0; i<country.length;i++){      
-          lander.insertAdjacentHTML("beforeend","<button id=`L_` onclick=`showTown("+country[i].id+")`>" + country[i].countryname+"</button>");
-          }       
-         }) 
-      
-     var stadName = ""
-     var population = ""
-     function showTown(landId){//funktion som visar städer av respektiv land när man klickar på knappen
-       fetch("stad.json")//hämtar data från stad jsonfil
-        .then(response=>response.json())
-        .catch(error=>console.log(error))
-        .then(town=>{ 
-          console.log(town);     
-           var cityList = document.getElementById("cityList");                    
-                for(let i=0; i < town.length; i++){//skapar städer som knapar 
-                 console.log(town[i].countryid, landId);
-                 if(town[i].countryid === landId){                                  
-             cityList.insertAdjacentHTML("beforeend","<button id=`C_` onclick=`showCityInfo("+town[i].id+")`>"+ town[i].stadname+"</button>");
-               stadName = town[i].stadname;
-               population = town[i].population;
-             }            
-             }
-           })
-           }
-           /*function showCityInfo(townId){// funktion som visar information om städerna när man klickar på respektiv knapp
-              console.log(townId);
-               console.log(stadName);
-               console.log(population);
-            var div_info = document.getElementById("info");                   
-             div_info.textContent = "<br/>" + stadName + " har " + population +"."  
-           showBesoktBtn(townId);
-           }
-        function showBesoktBtn(townId){//skapar besökt knappen
-          var div_info = document.getElementById("info"); 
-         var besokt_btn=document.createElement("button");
-         besokt_btn.setAttribute("id","besokt_btn");
-         besokt_btn.textContent="Besökt";
-         besokt_btn.onclick=saveTownId(townId);
-         div_info.insertAdjacentHTML("beforeend",besokt_btn);
+   
+let besoktaStader = JSON.parse(localStorage.getItem("besokta"));
+ console.log(besoktaStader);
 
-            }
-        function saveTownId(townId){
-          var lander = JSON.stringify(town);
-        }
- */
-var landData ="";
 var countryId="";
 var countryName="";
 fetch("land.json").then(response=>response.json()).then(data=>{
-  console.log(data);
-  landData=JSON.stringify(data);
+  console.log(data);  
   var countries=document.getElementById("countries");
   data.forEach(country => {
     var countryElement = document.createElement("button");
     countryElement.className = "country_btn";
     countryElement.textContent=country.countryname; 
-    countryElement.addEventListener("click",showCity(country.id));  
+    countryElement.setAttribute("onclick", "showCity('" + country.id + "');");
     countries.appendChild(countryElement); 
     countryId=country.id;
     countryName = country.countryname   
   }); 
 
 })
-var townData ="";
+
 var townId="";
 var townName = "";
 var townPopulation="";
@@ -77,17 +28,16 @@ console.log(countryId);
 fetch("stad.json").then(response=>response.json()).then(data=>{
   console.log(data);
   var cityList = document.getElementById("cityList");
-  data.forEach(town=>{
+  data.forEach(town=> {
     if(town.countryid===countryId){
       var townElement = document.createElement("button");
       townElement.className = "town_btn";
       townElement.textContent=town.stadname;
-      townElement.onclick = showCityInfo(town.id);
+      townElement.setAttribute("onclick","showCityInfo('"+ town.id+"')");
       cityList.appendChild(townElement);
       townId=town.id;
       townName=town.stadname;
-      townPopulation=town.population;
-      townData = town;
+     townPopulation=town.population;
     }
   })
 })
@@ -98,18 +48,23 @@ function showCityInfo(cityId){
   console.log(townPopulation);
   var div_info = document.getElementById("info");
   div_info.textContent = " " + townName + " har " +townPopulation+" invånare ."
-  showBesoktBtn(townId);
+  showBesoktBtn();
 }
 function showBesoktBtn(){
-  var div_info = document.getElementById("info");
+ var div_info = document.getElementById("info");
 var besokt_btn = document.createElement("button");
 besokt_btn.setAttribute("id","besokt_btn");
 besokt_btn.textContent = "Besökt";
-besokt_btn.addEventListener("click",saveTown(townId));
+besokt_btn.setAttribute("onclick","saveTown(`"+townId+"`)");
 div_info.appendChild(besokt_btn);
 }
-
+var besoktaStad =[];
 function saveTown(townId){
-  
-  console.log(townId);
-}
+    console.log(townId);
+var id = parseInt(townId);
+besoktaStad.push(id);
+var besoktaStad_ser=localStorage.setItem("besokta",JSON.stringify(besoktaStad));
+console.log(besoktaStad_ser);
+  }
+
+document.getElementById("countries").insertAdjacentHTML("afterend","<a href=`#saved`>Besökta städer</a>");
