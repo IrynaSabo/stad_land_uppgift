@@ -1,14 +1,10 @@
+​var besoktaStad =[];
+​
 if(localStorage.getItem("besokta")!==null) {
   console.log("laddar fil");
-let besoktaStad = JSON.parse(localStorage.getItem("besokta"));
-console.log(besoktaStad);}
-else{
- console.log("skapar en ny fil");
- var besoktaStad =[];
-localStorage.setItem("besokta",JSON.stringify(besoktaStad));
-}
- 
-
+  besoktaStad = JSON.parse(localStorage.getItem("besokta"));
+  console.log(besoktaStad);}
+​
 var countryId="";
 var countryName="";
 fetch("land.json").then(response=>response.json()).then(data=>{
@@ -78,13 +74,22 @@ besokt_btn.setAttribute("onclick","saveTown("+stadId+")");
 div_info.appendChild(besokt_btn);
 }
 
-
 function saveTown(stadId){   
   console.log(stadId); 
-var id = parseInt(stadId);
-console.log(id);
-besoktaStad.push(id);
+  var id = parseInt(stadId);
+  var isAdded = false;
+  for (var i = 0; i < besoktaStad.length; i++) {
+    if (besoktaStad[i].id === id){
+      isAdded=true
+    }
   }
+  if(besoktaStad.length === 0 || isAdded === false){
+    var object = {id: id};
+    besoktaStad.push(object);
+    localStorage.setItem("besokta",JSON.stringify(besoktaStad));
+  }
+  console.log(besoktaStad)
+}
 
   fetch("stad.json").then(response=>response.json()).then(data1=>{
     console.log(data1);
@@ -96,9 +101,11 @@ besoktaStad.push(id);
 					population += parseInt(data1[i].population);
 					line += '<div>' + data1[i].stadname + "</div>";
 				}
-			};
+			}
 		}			
 		line += "Population: "+population;
  document.getElementById("saved").insertAdjacentHTML("beforeend",line);
- document.getElementById("saved").style.display=block})
+ document.getElementById("saved").style.display=block
+
+})
  document.getElementById("cityList").insertAdjacentHTML("afterend","<a href=`#saved`>Besökta städer</a>");
